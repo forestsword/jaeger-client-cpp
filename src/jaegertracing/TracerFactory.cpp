@@ -29,16 +29,48 @@ TracerFactory::MakeTracer(const char* configuration,
     return opentracing::make_unexpected(
         std::make_error_code(std::errc::not_supported));
 #else
+    std::cout << "config" << std::endl;
+    std::cout << configuration << std::endl;
     YAML::Node yaml;
+
+    if (yaml) {
+      std::cout << "DEBUG FIRST YAML";
+    } else {
+      std::cout << "DEBUG FIRST NO YAML";
+    }
+
     try {
         yaml = YAML::Load(configuration);
+        std::cout << "yaml" << std::endl;
     } catch (const YAML::ParserException& e) {
         errorMessage = e.what();
         return opentracing::make_unexpected(
             opentracing::configuration_parse_error);
     }
+    yaml = YAML::Load(configuration);
 
+    if (yaml) {
+      std::cout << "DEBUG YAML";
+    } else {
+      std::cout << "DEBUG NO YAML";
+    }
+
+    if (yaml == NULL) {
+      std::cout << "DEBUG YAML NULL";
+    } else {
+      std::cout << "DEBUG YAML NOT NULL";
+    }
+
+    if (yaml["service_name"]) {
+      std::cout << "DEBUG service_name";
+      std::cout << yaml["service_name"] << std::endl;
+    } else {
+      std::cout << "DEBUG no service name?";
+    }
+
+    std::cout << "DEBUG call parse" << std::endl;
     auto tracerConfig = jaegertracing::Config::parse(yaml);
+    std::cout << "DEBUG parse done?" << std::endl;
 
     if (_readFromEnv) {
         tracerConfig.fromEnv();

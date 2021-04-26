@@ -42,12 +42,17 @@ class Config {
 
     static Config parse(const YAML::Node& configYAML)
     {
+        std::cout << "DEBUG start parse - 0" << std::endl;
         if (!configYAML.IsDefined() || !configYAML.IsMap()) {
+            std::cout << "DEBUG not defined" << std::endl;
             return Config();
         }
 
+        std::cout << "DEBUG service name?" << std::endl;
+        std::cout << configYAML << std::endl;
         const auto serviceName =
             utils::yaml::findOrDefault<std::string>(configYAML, "service_name", "");
+        std::cout << serviceName << std::endl;
 
         const auto disabled =
             utils::yaml::findOrDefault<bool>(configYAML, "disabled", false);
